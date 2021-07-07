@@ -11,6 +11,7 @@ def fetch_company_names():
             for i in r:
                 cnt += 1
                 companies.append(i[0])
+    return list(dict.fromkeys(companies))
 
 companies = fetch_company_names()
 
