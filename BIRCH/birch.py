@@ -9,6 +9,8 @@ def read_company_names():
             companies.append(l)
     return companies
 
+companies = read_company_names()
+
 
 def get_closing_prices(companies, number_of_companies):
     data = []
@@ -74,29 +76,20 @@ def normalize(data):
         new_data.append(new_trendline)
     return new_data
 
-companies = read_company_names()
-data = get_closing_prices(companies, 50)
-# data = calc_price_changes(companies, 50)
-data = normalize(data)
-data = np.array(data)[:, 0:100]
-data = average_ndays(data, 7)
 
-def clustering(number_of_clusters):
+def clustering(data, number_of_clusters=5):
+    from sklearn.cluster import Birch
     from matplotlib import pyplot as plt
-    from sklearn.cluster import KMeans
 
-    kmeans = KMeans(n_clusters=number_of_clusters, random_state=0, n_init=50).fit(np.array(data)[:, 1:])
+    brc = Birch(n_clusters=number_of_clusters)
+    brc.fit(data)
 
-    # Get the cluster centroids
-    # print(kmeans.cluster_centers_)
-        
-    # Get the cluster labels
-    print(kmeans.labels_)
+    labels = brc.predict(data)
 
     for k in range(0, number_of_clusters):
         clusterSize = 0
         for idx, r in enumerate(data):
-            if kmeans.labels_[idx] == k:
+            if labels[idx] == k:
                 plt.plot(r[1:], label = companies[int(r[0])])
                 clusterSize += 1
         plt.title('Cluster number {} size = {}'.format(k, clusterSize))
@@ -104,4 +97,9 @@ def clustering(number_of_clusters):
         plt.show()
 
 
-clustering(10)
+data = get_closing_prices(companies, 50)
+# data = calc_price_changes(companies, 50)
+data = normalize(data)
+data = np.array(data)[:, 0:100]
+
+clustering(data, 8)
