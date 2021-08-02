@@ -5,25 +5,24 @@ dataset = Dataset()
 
 companies = dataset.read_company_names()
 
-data = dataset.get_closing_prices(companies, 100)
+data = dataset.get_closing_prices(companies, 50)
 data = dataset.normalize(data)
-data = np.array(data)[:, 0:200]
+data = np.array(data)[:, 0:100]
 
 
-def clustering(data, number_of_clusters=5):
-    from sklearn.cluster import Birch
+def clustering(data, n_components=5):
+    from sklearn.mixture import GaussianMixture
     from matplotlib import pyplot as plt
     from sklearn.metrics import silhouette_score
 
-    brc = Birch(n_clusters=number_of_clusters)
-    brc.fit(data)
+    gm = GaussianMixture(n_components=n_components, random_state=0).fit(data)
 
-    labels = brc.predict(data)
+    labels = gm.predict(data)
 
     sil_score = silhouette_score(data, labels)
     print(sil_score)
 
-    for k in range(0, number_of_clusters):
+    for k in range(0, n_components):
         clusterSize = 0
         for idx, r in enumerate(data):
             if labels[idx] == k:
@@ -34,6 +33,6 @@ def clustering(data, number_of_clusters=5):
         plt.show()
 
 
-for i in range(19, 20):
+for i in range(6, 7):
     print(i)
     clustering(data, i)
