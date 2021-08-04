@@ -15,11 +15,11 @@ def clustering(data, n_components=5):
     from matplotlib import pyplot as plt
     from sklearn.metrics import silhouette_score
 
-    gm = GaussianMixture(n_components=n_components, random_state=0).fit(data)
+    gm = GaussianMixture(n_components=n_components, random_state=0).fit(np.array(data)[:, 1:])
 
-    labels = gm.predict(data)
+    labels = gm.predict(np.array(data)[:, 1:])
 
-    sil_score = silhouette_score(data, labels)
+    sil_score = silhouette_score(np.array(data)[:, 1:], labels)
     print(sil_score)
 
     for k in range(0, n_components):

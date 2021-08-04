@@ -35,7 +35,7 @@ class Dataset:
                 if len(df['Close']) != 753:
                     continue
             except FileNotFoundError:
-                print(company, 'Not found')
+                # print(company, 'Not found')
                 continue
             price_changes = [idx] + [0] * len(df['Close'])
             for i in range(1, len(df['Close'])):
