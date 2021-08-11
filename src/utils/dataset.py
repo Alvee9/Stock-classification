@@ -22,7 +22,8 @@ class Dataset:
                     continue
                 data.append([idx] + list(df['Close']))
             except FileNotFoundError:
-                print(company, 'Not found')
+                # print(company, 'Not found')
+                pass
             if len(data) == number_of_companies:
                 break
         return data
