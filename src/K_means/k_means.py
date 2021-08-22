@@ -72,15 +72,15 @@ k_means.clustering(30)
 
 # k_means.plot('../Plots/K_means/{}.png')
 
-validation = k_means.get_validation_scores()
+# validation = k_means.get_validation_scores()
 
-sil_avg = []
+# sil_avg = []
 
-for k in range(0, k_means.number_of_clusters):
-    sil_sum = 0
-    for i in k_means.cluster_lists[k]:
-        sil_sum += validation[1][i]
-    sil_avg.append(sil_sum / k_means.cluster_sizes[k])
+# for k in range(0, k_means.number_of_clusters):
+#     sil_sum = 0
+#     for i in k_means.cluster_lists[k]:
+#         sil_sum += validation[1][i]
+#     sil_avg.append(sil_sum / k_means.cluster_sizes[k])
 
 
 for i in range(0, k_means.number_of_clusters):
