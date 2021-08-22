@@ -52,7 +52,7 @@ class _Birch:
         return ([sil_score, dbi, chs], silhouette_samples(np.array(self.data_closing)[:, 1:], self.cluster_labels))
 
 
-    def plot(self, path='../Plots/BIRCH/{}.png'):
+    def plot(self, path='../Plots/BIRCH/{}.png', save=False):
         for k in range(0, self.number_of_clusters):
             plt.clf()
             clusterSize = 0
@@ -62,8 +62,10 @@ class _Birch:
                     clusterSize += 1
             plt.title('Cluster number {} size = {}'.format(k, clusterSize))
             plt.legend()
-            plt.show()
-            # plt.savefig(path.format(k), dpi=600)
+            if save:
+                plt.savefig(path.format(k), dpi=600)
+            else:
+                plt.show()
 
 
 _birch = _Birch()
