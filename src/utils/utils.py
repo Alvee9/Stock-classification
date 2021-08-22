@@ -33,3 +33,12 @@ def get_dist_matrix(data):
             row.append(cust_dist(data[i][1:], data[j][1:]))
         distance_matrix.append(row)
     return distance_matrix
+
+def get_edge_matrix(data):
+    distance_matrix = []
+    for i in range(len(data)):
+        row = []
+        for j in range(len(data)):
+            row.append(1 / (1 + cust_dist(data[i][1:], data[j][1:])))
+        distance_matrix.append(row)
+    return distance_matrix
