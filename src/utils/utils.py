@@ -6,7 +6,7 @@ def cust_dist(a, b):
         # Check if the daily trends of the stocks similar or different
         if ((a[i] - a[i - 1]) * (b[i] - b[i - 1]) < 0):
             # The daily trends are different, it incurs a bigger penalty
-            d += abs(a[i] - b[i]) * 4
+            d += abs(a[i] - b[i]) * 2
         else:
             # The daily trends are similar, it incurs a smaller penalty
             change_diff = abs((a[i] - a[i - 1]) - (b[i] - b[i - 1]))
@@ -16,21 +16,21 @@ def cust_dist(a, b):
             # Check if the weekly trends of the stocks similar or different
             if ((a[i] - a[i - 7]) * (b[i] - b[i - 7]) < 0):
                 # The weekly trends are different, it incurs a bigger penalty
-                d += abs(a[i] - a[i - 7] - (b[i] - b[i - 7])) * 8
+                d += abs(a[i] - a[i - 7] - (b[i] - b[i - 7])) * 4
             else:
                 # The weekly trends are similar, it incurs a smaller penalty
                 change_diff = abs((a[i] - a[i - 7]) - (b[i] - b[i - 7]))
-                d += change_diff * 2
+                d += change_diff / 7
         
         if i >= 30:
             # Check if the monthly trends of the stocks similar or different
             if ((a[i] - a[i - 30]) * (b[i] - b[i - 30]) < 0):
                 # The monthly trends are different, it incurs a bigger penalty
-                d += abs(a[i] - a[i - 30] - (b[i] - b[i - 30])) * 12
+                d += abs(a[i] - a[i - 30] - (b[i] - b[i - 30])) * 8
             else:
                 # The monthly trends are similar, it incurs a smaller penalty
                 change_diff = abs((a[i] - a[i - 30]) - (b[i] - b[i - 30]))
-                d += change_diff * 3
+                d += change_diff / 30
 
         # Finally the absolute difference between two corresponding elements are halved and added as it is considered as a small penalty
         d += abs(a[i] - b[i])/2
