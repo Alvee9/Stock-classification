@@ -68,31 +68,39 @@ class _Birch:
                 plt.show()
 
 
-_birch = _Birch()
-_birch.load_data()
-_birch.clustering(30)
+if __name__ == "__main__":
+    _birch = _Birch()
+    _birch.load_data()
+    _birch.clustering(20)
 
-# k_means.plot('../Plots/BIRCH/{}.png')
+    _birch.plot('../Plots/BIRCH/{}.png', save=True)
 
-validation = _birch.get_validation_scores()
+    validation = _birch.get_validation_scores()
 
-sil_avg = []
+    sil_avg = []
 
-for k in range(0, _birch.number_of_clusters):
-    sil_sum = 0
-    for i in _birch.cluster_lists[k]:
-        sil_sum += validation[1][i]
-    sil_avg.append(sil_sum / _birch.cluster_sizes[k])
+    for k in range(0, _birch.number_of_clusters):
+        sil_sum = 0
+        for i in _birch.cluster_lists[k]:
+            sil_sum += validation[1][i]
+        sil_avg.append(sil_sum / _birch.cluster_sizes[k])
 
 
-for i in range(0, _birch.number_of_clusters):
-    if _birch.cluster_sizes[i] > 7:
-        print("original cluster", i)
-        data = []
-        for j in _birch.cluster_lists[i]:
-            data.append(_birch.data_closing[j])
-        div_birch = _Birch()
-        div_birch.data_closing = data
-        div_birch.clustering(int(np.ceil(_birch.cluster_sizes[i]/7.0)))
-        div_birch.plot()
+    for i in range(0, _birch.number_of_clusters):
+        if _birch.cluster_sizes[i] > 7:
+            print("original cluster", i)
+            data = []
+            for j in _birch.cluster_lists[i]:
+                data.append(_birch.data_closing[j])
+            div_birch = _Birch()
+            div_birch.data_closing = data
+            div_birch.clustering(int(np.ceil(_birch.cluster_sizes[i]/7.0)))
+            div_birch.plot()
 
+
+
+    for k in range(3, 31):
+        brc = _Birch()
+        brc.load_data()
+        brc.clustering(k)
+        print(k, brc.get_validation_scores()[0][0])

@@ -1,4 +1,5 @@
 import numpy as np
+from sklearn import metrics
 from utils.dataset import Dataset
 from sklearn.cluster import AgglomerativeClustering
 from sklearn.metrics import silhouette_score, davies_bouldin_score, calinski_harabasz_score, silhouette_samples
@@ -27,9 +28,12 @@ class Agglomerative:
         self.distance_matrix = get_dist_matrix(self.data_closing)
     
 
-    def clustering(self, number_of_clusters):
+    def clustering(self, number_of_clusters, distance=None):
         self.number_of_clusters = number_of_clusters
-        agglo = AgglomerativeClustering(n_clusters=self.number_of_clusters, affinity='precomputed', linkage='average').fit(self.distance_matrix)
+        if distance is None:
+            agglo = AgglomerativeClustering(n_clusters=self.number_of_clusters).fit(np.array(self.data_closing)[:, 1:])
+        else:
+            agglo = AgglomerativeClustering(n_clusters=self.number_of_clusters, affinity='precomputed', linkage='average').fit(self.distance_matrix)
         self.cluster_labels = list(agglo.labels_)
         
         self.cluster_sizes = []
@@ -46,7 +50,7 @@ class Agglomerative:
         
 
     def get_validation_scores(self):
-        sil_score = silhouette_score(np.array(self.data_closing)[:, 1:], self.cluster_labels)
+        sil_score = silhouette_score(self.distance_matrix, self.cluster_labels, metric='precomputed')
         dbi = davies_bouldin_score(np.array(self.data_closing)[:, 1:], self.cluster_labels)
         chs = calinski_harabasz_score(np.array(self.data_closing)[:, 1:], self.cluster_labels)
         # print('silhouette=', sil_score, 'dbi=', dbi, 'chs=', chs)
@@ -71,11 +75,11 @@ class Agglomerative:
                 plt.show()
 
 
-agglo = Agglomerative()
-agglo.load_data()
-agglo.clustering(30)
+# agglo = Agglomerative()
+# agglo.load_data()
+# agglo.clustering(20)
 
-agglo.plot('../Plots/Agglo/{}.png', save=True)
+# agglo.plot('../Plots/Agglo/{}.png', save=True)
 
 # validation = agglo.get_validation_scores()
 
@@ -88,15 +92,22 @@ agglo.plot('../Plots/Agglo/{}.png', save=True)
 #     sil_avg.append(sil_sum / agglo.cluster_sizes[k])
 
 
-for i in range(0, agglo.number_of_clusters):
-    if agglo.cluster_sizes[i] > 7:
-        print("original cluster", i)
-        data = []
-        for j in agglo.cluster_lists[i]:
-            data.append(agglo.data_closing[j])
-        div_agglo = Agglomerative()
-        div_agglo.data_closing = data
-        div_agglo.distance_matrix = get_dist_matrix(data)
-        div_agglo.clustering(int(np.ceil(agglo.cluster_sizes[i]/7.0)))
-        div_agglo.plot(save=False)
+# for i in range(0, agglo.number_of_clusters):
+#     if agglo.cluster_sizes[i] > 7:
+#         print("original cluster", i)
+#         data = []
+#         for j in agglo.cluster_lists[i]:
+#             data.append(agglo.data_closing[j])
+#         div_agglo = Agglomerative()
+#         div_agglo.data_closing = data
+#         div_agglo.distance_matrix = get_dist_matrix(data)
+#         div_agglo.clustering(int(np.ceil(agglo.cluster_sizes[i]/7.0)))
+#         div_agglo.plot(save=False)
 
+
+
+# agglo = Agglomerative()
+# agglo.load_data()
+# for k in range(3, 31):
+#     agglo.clustering(k, distance='custom')
+#     print(k, agglo.get_validation_scores()[0][0])

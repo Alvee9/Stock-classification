@@ -119,11 +119,14 @@ class Spectral:
         self.distance_matrix = get_edge_matrix(self.data_closing)
     
 
-    def clustering(self, number_of_clusters):
+    def clustering(self, number_of_clusters, distance=None):
         self.number_of_clusters = number_of_clusters
-        spectral = SpectralClustering(n_clusters=self.number_of_clusters, affinity='precomputed').fit(self.distance_matrix)
+        if distance is None:
+            spectral = SpectralClustering(n_clusters=self.number_of_clusters, affinity='nearest_neighbors').fit(np.array(self.data_closing)[:, 1:])
+        else:
+            spectral = SpectralClustering(n_clusters=self.number_of_clusters, affinity='precomputed').fit(self.distance_matrix)
         self.cluster_labels = list(spectral.labels_)
-        
+
         self.cluster_sizes = []
         self.cluster_lists = []
         for k in range(0, self.number_of_clusters):
@@ -144,7 +147,8 @@ class Spectral:
         # print('silhouette=', sil_score, 'dbi=', dbi, 'chs=', chs)
 
 
-        return ([sil_score, dbi, chs], silhouette_samples(np.array(self.data_closing)[:, 1:], self.cluster_labels))
+        # return ([sil_score, dbi, chs], silhouette_samples(np.array(self.data_closing)[:, 1:], self.cluster_labels))
+        return sil_score
 
 
     def plot(self, path='../Plots/Spectral/{}.png', save=False):
@@ -162,12 +166,12 @@ class Spectral:
             else:
                 plt.show()
 
+if __name__ == "__main__":
+    spectral = Spectral()
+    spectral.load_data()
+    spectral.clustering(20)
 
-spectral = Spectral()
-spectral.load_data()
-spectral.clustering(30)
-
-spectral.plot('../Plots/Spectral/{}.png', save=True)
+    spectral.plot('../Plots/Spectral/{}.png', save=True)
 
 # validation = spectral.get_validation_scores()
 
@@ -180,16 +184,39 @@ spectral.plot('../Plots/Spectral/{}.png', save=True)
 #     sil_avg.append(sil_sum / spectral.cluster_sizes[k])
 
 
-for i in range(0, spectral.number_of_clusters):
-    if spectral.cluster_sizes[i] > 7:
-        print("original cluster", i)
-        data = []
-        for j in spectral.cluster_lists[i]:
-            data.append(spectral.data_closing[j])
-        div_spectral = Spectral()
-        div_spectral.data_closing = data
-        div_spectral.distance_matrix = get_edge_matrix(data)
-        div_spectral.clustering(int(np.ceil(spectral.cluster_sizes[i]/7.0)))
-        div_spectral.plot(save=False)
+# for i in range(0, spectral.number_of_clusters):
+#     if spectral.cluster_sizes[i] > 7:
+#         print("original cluster", i)
+#         data = []
+#         for j in spectral.cluster_lists[i]:
+#             data.append(spectral.data_closing[j])
+#         div_spectral = Spectral()
+#         div_spectral.data_closing = data
+#         div_spectral.distance_matrix = get_edge_matrix(data)
+#         div_spectral.clustering(int(np.ceil(spectral.cluster_sizes[i]/7.0)))
+#         div_spectral.plot(save=False)
 
 
+
+# from K_means.k_means import K_means
+
+# for i in range(0, spectral.number_of_clusters):
+#     if spectral.cluster_sizes[i] > 7:
+#         print("original cluster", i)
+#         data = []
+#         for j in spectral.cluster_lists[i]:
+#             data.append(spectral.data_closing[j])
+#         div_spectral = K_means()
+#         div_spectral.data_closing = data
+#         # div_spectral.distance_matrix = get_edge_matrix(data)
+#         div_spectral.clustering(int(np.ceil(spectral.cluster_sizes[i]/7.0)))
+#         div_spectral.plot(save=False)
+
+
+
+# spectral = Spectral()
+# spectral.load_data()
+
+# for k in range(3, 31):
+#     spectral.clustering(k, distance='custom')
+#     print(k, spectral.get_validation_scores())

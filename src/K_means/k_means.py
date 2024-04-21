@@ -23,6 +23,7 @@ class K_means:
         self.data_closing = self.dataset.normalize(self.data_closing)
         self.data_change = np.array(self.data_change)[:, 0:300]
         self.data_closing = np.array(self.data_closing)[:, 0:300]
+
     
     def clustering(self, number_of_clusters):
         self.number_of_clusters = number_of_clusters
@@ -46,8 +47,6 @@ class K_means:
         sil_score = silhouette_score(np.array(self.data_closing)[:, 1:], self.cluster_labels)
         dbi = davies_bouldin_score(np.array(self.data_closing)[:, 1:], self.cluster_labels)
         chs = calinski_harabasz_score(np.array(self.data_closing)[:, 1:], self.cluster_labels)
-        # print('silhouette=', sil_score, 'dbi=', dbi, 'chs=', chs)
-
 
         return ([sil_score, dbi, chs], silhouette_samples(np.array(self.data_closing)[:, 1:], self.cluster_labels))
 
@@ -68,31 +67,26 @@ class K_means:
                 plt.show()
 
 
-k_means = K_means()
-k_means.load_data()
-k_means.clustering(30)
+# k_means = K_means()
+# k_means.load_data()
+# k_means.clustering(20)
+# k_means.plot('../Plots/K_means/{}.png', save=True)
 
-# k_means.plot('../Plots/K_means/{}.png')
-
-# validation = k_means.get_validation_scores()
-
-# sil_avg = []
-
-# for k in range(0, k_means.number_of_clusters):
-#     sil_sum = 0
-#     for i in k_means.cluster_lists[k]:
-#         sil_sum += validation[1][i]
-#     sil_avg.append(sil_sum / k_means.cluster_sizes[k])
+# for k in range(3, 31):
+#     k_means = K_means()
+#     k_means.load_data()
+#     k_means.clustering(k)
+#     print(k, k_means.get_validation_scores()[0][0])
 
 
-for i in range(0, k_means.number_of_clusters):
-    if k_means.cluster_sizes[i] > 7:
-        print("original cluster", i)
-        data = []
-        for j in k_means.cluster_lists[i]:
-            data.append(k_means.data_closing[j])
-        div_k_means = K_means()
-        div_k_means.data_closing = data
-        div_k_means.clustering(int(np.ceil(k_means.cluster_sizes[i]/7.0)))
-        div_k_means.plot()
+# for i in range(0, k_means.number_of_clusters):
+#     if k_means.cluster_sizes[i] > 7:
+#         print("original cluster", i)
+#         data = []
+#         for j in k_means.cluster_lists[i]:
+#             data.append(k_means.data_closing[j])
+#         div_k_means = K_means()
+#         div_k_means.data_closing = data
+#         div_k_means.clustering(int(np.ceil(k_means.cluster_sizes[i]/7.0)))
+#         div_k_means.plot()
 

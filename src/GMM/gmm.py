@@ -68,21 +68,27 @@ class GMM:
                 plt.show()
 
 
-gmm = GMM()
-gmm.load_data()
-gmm.clustering(30)
+if __name__ == "__main__":
+    gmm = GMM()
+    gmm.load_data()
+    gmm.clustering(20)
 
-gmm.plot('../Plots/GMM/{}.png', save=True)
+    gmm.plot('../Plots/GMM/{}.png', save=True)
 
 
-for i in range(0, gmm.number_of_clusters):
-    if gmm.cluster_sizes[i] > 7:
-        print("original cluster", i)
-        data = []
-        for j in gmm.cluster_lists[i]:
-            data.append(gmm.data_closing[j])
-        div_gmm = GMM()
-        div_gmm.data_closing = data
-        div_gmm.clustering(int(np.ceil(gmm.cluster_sizes[i]/7.0)))
-        div_gmm.plot(save=False)
+    for i in range(0, gmm.number_of_clusters):
+        if gmm.cluster_sizes[i] > 7:
+            print("original cluster", i)
+            data = []
+            for j in gmm.cluster_lists[i]:
+                data.append(gmm.data_closing[j])
+            div_gmm = GMM()
+            div_gmm.data_closing = data
+            div_gmm.clustering(int(np.ceil(gmm.cluster_sizes[i]/7.0)))
+            div_gmm.plot(save=False)
 
+    for k in range(3, 31):
+        gmm = GMM()
+        gmm.load_data()
+        gmm.clustering(k)
+        print(k, gmm.get_validation_scores()[0][0])
